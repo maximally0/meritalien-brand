@@ -1,0 +1,88 @@
+<!doctype html>
+<!--
+  MERITALIEN — LinkedIn company-page cover, direction 03 of 03
+  ==========================================================
+  MARK-LED. The identity is the wordmark (docs/04-logo.md: "Meritalien does not
+  have a separate drawn logo. The identity is the typeset wordmark"). It is
+  centred, on paper, and it is the largest thing on the strip.
+
+  Accent carries exactly once: "alien" in the wordmark, in --accent-ink #00854a
+  — the AA-contrast green, because #00e07a on paper is only 2.0:1 and may never
+  be used for text there (docs/01-foundations.md).
+
+  The brand icon (M + green dot) is deliberately NOT used here: its dot is the
+  accent, and pairing it with a green "alien" would spend the accent twice.
+
+  Canvas 1128 x 191 -> PNG 1512 x 256 and 1128 x 191.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Meritalien — LinkedIn cover 03 (mark-led)</title>
+
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="banner-shell.css">
+
+<style>
+  /* --- 03: centred lockup. Everything sits on the horizontal centreline so
+     the bottom-left logo tile can never reach it. --- */
+
+  .s3__mark {
+    position: absolute;
+    left: 0; right: 0;
+    top: 38px;
+    margin: 0;
+    max-width: none;
+    text-align: center;
+    font-family: var(--font-sans);      /* docs/04-logo.md: Geist 500 */
+    font-size: 56px;                    /* banner-local optical size */
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: var(--tr-heading);  /* -.022em */
+    color: var(--text);
+  }
+  .s3__mark span { color: var(--accent-ink); }
+
+  .s3__rule {
+    position: absolute;
+    left: 50%;
+    top: 110px;
+    width: 44px;
+    height: 1px;
+    margin-left: -22px;
+    background: var(--line-strong);
+  }
+
+  .s3__line {
+    position: absolute;
+    left: 0; right: 0;
+    top: 126px;
+    margin: 0;
+    max-width: none;
+    text-align: center;
+    font-family: var(--font-serif);     /* statements are the serif register */
+    font-size: var(--t-h3);
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+    color: var(--text-muted);
+  }
+
+  .keepout { outline-color: rgba(224, 64, 64, 0.9); }
+</style>
+</head>
+<body>
+<div class="stage stage--paper">
+
+  <h1 class="s3__mark">Merit<span>alien</span></h1>
+
+  <div class="s3__rule"></div>
+
+  <p class="s3__line">Talent is everywhere. Opportunity isn&rsquo;t.</p>
+
+  <div class="keepout"></div>
+</div>
+</body>
+</html>

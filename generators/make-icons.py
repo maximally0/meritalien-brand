@@ -20,9 +20,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
 FAVICON = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#0b0b0c"/>
-  <path d="M14 44V20h6.2l6.4 12.4L33 20h6.2v24h-5.4V29.6L29 40h-4.6L19.4 29.6V44z" fill="#fbfaf8"/>
-  <circle cx="47.5" cy="41.5" r="4.5" fill="#00e07a"/>
+  <rect width="64" height="64" rx="10" fill="#0b0b0c"/>
+  <!-- M: monoline skeleton (13.75,20) -> (25,43) -> (36.25,20), weight 5.5, mitred, clipped to the 28x24 cap box -->
+  <path d="M11.00 44.00 16.50 44.00 16.50 31.88 22.43 44.00 27.57 44.00 33.50 31.88 33.50 44.00 39.00 44.00 39.00 20.00 36.25 20.00 33.19 20.00 25.00 36.74 16.81 20.00 13.75 20.00 11.00 20.00Z" fill="#fbfaf8"/>
+  <circle cx="48" cy="39" r="5" fill="#00e07a"/>
 </svg>
 """
 

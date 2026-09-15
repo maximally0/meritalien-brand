@@ -1,0 +1,91 @@
+<!doctype html>
+<!--
+  MERITALIEN — LinkedIn company-page cover, direction 02 of 03
+  ==========================================================
+  ROUTE-LED. The banner is a route readout, read left to right like a
+  departure board: origin muted, destination bright, the line between them.
+
+  Accent carries exactly once: the filled destination dot at the end of the
+  track. No green word, no green rule, no wordmark (the split wordmark is a
+  colour device and would spend the accent a second time — LinkedIn prints the
+  Page name directly under the cover anyway).
+
+  Canvas 1128 x 191 -> PNG 1512 x 256 and 1128 x 191.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Meritalien — LinkedIn cover 02 (route-led)</title>
+
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="banner-shell.css">
+
+<style>
+  /* --- 02: the route is the layout. Hairline track runs the width of the
+     safe column; the two cities sit above it. --- */
+
+  .s2__city {
+    position: absolute;
+    top: 60px;
+    margin: 0;
+    max-width: none;
+    font-family: var(--font-mono);
+    font-size: 40px;              /* banner-local optical size */
+    line-height: 1;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .s2__city--from { left: 280px;  color: var(--text-invert-muted); }
+  .s2__city--to   { right: 88px;  color: var(--text-invert); text-align: right; }
+
+  .s2__track {
+    position: absolute;
+    left: 280px;
+    right: 88px;
+    top: 126px;
+    height: 1px;
+    background: var(--line-invert-strong);
+  }
+  /* origin: hollow. destination: filled and green — the one accent. */
+  .s2__track::before {
+    content: "";
+    position: absolute;
+    left: -3.5px; top: -3.5px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    background: var(--ink-900);
+    border: 1px solid var(--line-invert-strong);
+  }
+  .s2__track::after {
+    content: "";
+    position: absolute;
+    right: -6px; top: -6px;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .s2__routes { position: absolute; left: 280px; top: 152px; }
+</style>
+</head>
+<body>
+<div class="stage stage--ink">
+
+  <p class="label" style="left:280px; top:32px;">Global talent mobility</p>
+
+  <p class="s2__city s2__city--from">Mumbai</p>
+  <div class="s2__track"></div>
+  <p class="s2__city s2__city--to">San&nbsp;Francisco</p>
+
+  <p class="label label--xs s2__routes">
+    O-1A &middot; EB-1A &middot; EB-2 NIW &middot; UK Global Talent
+  </p>
+
+  <div class="keepout"></div>
+</div>
+</body>
+</html>

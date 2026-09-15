@@ -6,3 +6,18 @@ __pycache__/
 # OS noise
 .DS_Store
 Thumbs.db
+
+# design exploration scratch (kept local: lab scripts, per-size proofs, QA crops)
+logo/lab/
+logo/diag/
+logo/__pycache__/
+logo/*-16.png
+logo/*-32.png
+logo/*-64.png
+logo/*-512.png
+logo/compare-*.png
+logo/*.py
+banner/_qa/
+
+# Other workstreams share this parent directory. Never git add -A here.
+sgc-build/

@@ -1,0 +1,76 @@
+/* ==========================================================================
+   MERITALIEN — LinkedIn company-page banner shell
+   --------------------------------------------------------------------------
+   Canvas is authored at 1128 x 191 CSS px — LinkedIn's cover render size.
+   Each design is screenshotted at device_scale_factor=2 (2256 x 382) and then
+   resampled to the deliverable sizes:
+       1512 x 256  LinkedIn's official recommended (and minimum) upload size
+       1128 x 191  the size LinkedIn renders it at in the page layout
+   Both share the exact same 5.906:1 aspect ratio, so nothing moves.
+
+   These two are the only dimensions in this folder that are not lifted from
+   tokens/tokens.css: the strip is a fixed-size artefact, so the fluid type
+   scale (clamp + vw) has nothing to resolve against. Type roles, colours,
+   families, tracking and hairlines all come from the tokens.
+
+   SAFE AREA (LinkedIn crops the edges and lays the 300x300 company logo over
+   the bottom-left of the cover). Every direction keeps its content inside
+       x >= 280px  and  y in 30..170
+   and `.keepout` (x < 272, y >= 110) draws the red QA box that must stay empty.
+   ========================================================================== */
+
+html,
+body {
+  width: 1128px;
+  height: 191px;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--ink-900);
+}
+
+.stage {
+  position: relative;
+  width: 1128px;
+  height: 191px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* surfaces — the only two the system allows */
+.stage--ink   { background: var(--ink-900); color: var(--text-invert); }
+.stage--paper { background: var(--paper-100); color: var(--text); }
+
+/* mono label register: eyebrows and machine-facts */
+.label {
+  position: absolute;
+  margin: 0;
+  max-width: none;
+  font-family: var(--font-mono);
+  font-size: var(--t-small);          /* 14px */
+  letter-spacing: var(--tr-mono);     /* +.16em */
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+.label--xs { font-size: 0.8125rem; }  /* 13px, the .mono step */
+.stage--ink .label   { color: var(--text-invert-muted); }
+.stage--paper .label { color: var(--text-faint); }
+
+/* QA only — the region LinkedIn's logo tile and edge-crop can eat.
+   Never present with .is-on. */
+.keepout {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 272px;
+  height: 81px;
+  outline: 1px dashed rgba(224, 64, 64, 0.9);
+  outline-offset: -1px;
+  background: rgba(224, 64, 64, 0.10);
+  display: none;
+  z-index: 99;
+}
+.keepout.is-on { display: block; }

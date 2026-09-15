@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="10" fill="#0b0b0c"/>
+  <!-- M: monoline skeleton (14.25,20) -> (24.5,42) -> (34.75,20), weight 6.5, mitred, clipped to the 27x24 cap box -->
+  <path d="M11.00 44.00 17.50 44.00 17.50 34.67 21.85 44.00 27.15 44.00 31.50 34.67 31.50 44.00 38.00 44.00 38.00 20.00 34.75 20.00 31.16 20.00 24.50 34.30 17.84 20.00 14.25 20.00 11.00 20.00Z" fill="#fbfaf8"/>
+  <circle cx="47.5" cy="38.5" r="5.5" fill="#00e07a"/>
+</svg>

@@ -1,0 +1,70 @@
+<!doctype html>
+<!--
+  MERITALIEN — LinkedIn company-page cover, direction 01 of 03
+  ==========================================================
+  TYPE-LED. The hero line is the whole banner.
+
+  Accent carries exactly once: the word "borders", Newsreader italic, --accent
+  on the ink surface. There is no route readout, no icon and no second green.
+
+  Canvas 1128 x 191 (LinkedIn cover render size) -> PNG 1512 x 256 (official
+  upload size) and 1128 x 191 (display size).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Meritalien — LinkedIn cover 01 (type-led)</title>
+
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="banner-shell.css">
+
+<style>
+  /* --- 01: a statement, left-aligned in the safe column to the right of
+     LinkedIn's logo tile. Nothing sits in the bottom-left keep-out. --- */
+
+  .s1__line {
+    position: absolute;
+    left: 280px;
+    top: 62px;
+    width: 800px;
+    margin: 0;
+    max-width: none;
+    font-family: var(--font-sans);
+    font-size: 44px;              /* banner-local optical size */
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: var(--tr-display);
+    color: var(--text-invert);
+  }
+
+  /* the one word that carries the accent. Serif italic — the register the
+     system reserves for the hero's emphasised word. */
+  .s1__line em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.055em;           /* optically matches Geist's x-height */
+    letter-spacing: -0.012em;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<div class="stage stage--ink">
+
+  <p class="label" style="left:280px; top:34px;">Global talent mobility</p>
+
+  <p class="label" style="right:64px; top:34px; text-align:right;">
+    O-1A &middot; EB-1A &middot; EB-2 NIW &middot; UK Global Talent
+  </p>
+
+  <h1 class="s1__line">
+    Exceptional talent shouldn&rsquo;t be<br>limited by <em>borders</em>.
+  </h1>
+
+  <div class="keepout"></div>
+</div>
+</body>
+</html>
