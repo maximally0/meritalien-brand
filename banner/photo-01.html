@@ -44,12 +44,18 @@
      they multiplied and crushed the photo to near-black, losing the statue. */
   .stage__grad {
     position: absolute; inset: 0;
+    /* Rebalanced for the ONE-LINE layout. A single line is wider than one line of
+       the old two-line block, so it reaches further right into brighter water and
+       skyline -- measured 1.96:1 there, a fail. The gradient now holds its density
+       out to ~90% and only clears at the far right, where the statue stands. */
     background: linear-gradient(
       90deg,
-      rgba(11,11,12,0.86) 0%,
-      rgba(11,11,12,0.74) 26%,
-      rgba(11,11,12,0.48) 52%,
-      rgba(11,11,12,0.10) 100%
+      rgba(11,11,12,0.88) 0%,
+      rgba(11,11,12,0.84) 26%,
+      rgba(11,11,12,0.78) 46%,
+      rgba(11,11,12,0.66) 68%,
+      rgba(11,11,12,0.44) 90%,
+      rgba(11,11,12,0.08) 100%
     );
   }
 
@@ -67,12 +73,12 @@
     margin-top: 14px;
     font-family: Geist, system-ui, sans-serif;
     font-weight: 500;
-    font-size: 38px;
+    font-size: 44px;
     line-height: 1.06;
-    letter-spacing: -0.028em;
+    letter-spacing: -0.032em;
     color: #fbfaf8;
     text-shadow: 0 1px 4px rgba(6,6,7,0.60);
-    max-width: 560px;
+    white-space: nowrap;
   }
   /* the single accent: "borderless" is the word the brand rests on */
   h1 em {
@@ -83,7 +89,7 @@
   }
 
   .routes {
-    position: absolute; left: 268px; top: 150px;
+    position: absolute; left: 268px; top: 122px;
     font-family: "Departure Mono", monospace;
     font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
     color: #cdc9c2;
@@ -97,7 +103,7 @@
     <div class="stage__grad"></div>
     <div class="copy">
       <p class="labels">Global talent mobility</p>
-      <h1>Making exceptional<br>talent <em>borderless</em>.</h1>
+      <h1>Making exceptional talent <em>borderless</em>.</h1>
     </div>
     <p class="routes">O-1A &middot; EB-1A &middot; EB-2 NIW &middot; UK Global Talent</p>
   </div>
