@@ -21,3 +21,11 @@ banner/_qa/
 
 # Other workstreams share this parent directory. Never git add -A here.
 sgc-build/
+
+# scratch
+banner/_bare.html
+banner/img/band-test.jpg
+banner/img/offset-test.jpg
+banner/img/candidates-sheet.jpg
+linkedin/_mock.html
+linkedin/_overlap-region.png

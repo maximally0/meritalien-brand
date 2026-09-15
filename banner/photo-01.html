@@ -1,0 +1,120 @@
+<!doctype html>
+<!--
+  MERITALIEN — LinkedIn company-page cover
+  ============================================================
+  Photo-led. "Making exceptional talent borderless." over a harbour photograph.
+
+  IMAGE: Carol M. Highsmith, "Statue of Liberty, New York Harbor" (Library of
+  Congress). Public domain / CC0 — no attribution obligation, which matters for a
+  commercial Page. Source credited anyway in banner/img/credits.json.
+
+  CROP: the top band of the source. Full width 2172 x 367 is the tallest band a
+  5.9:1 banner can take from a 2172 x 1448 frame, and it happens to hold the whole
+  composition — statue right, flag on the island, skyline behind, open water left
+  for the headline.
+
+  NO RESERVED LOGO GUTTER. An earlier version kept 280px of empty left margin
+  clear of LinkedIn's logo overlay. That reads as a layout mistake when you see
+  the cover without the logo on it, and LinkedIn will place the logo over the
+  image regardless. The composition now uses the full width and simply keeps the
+  bottom-left corner visually quiet.
+
+  GEOMETRY: canvas 1128 x 191 (LinkedIn's render size) screenshotted at 2x, then
+  resampled to 1512 x 256 (the official upload size) and 1128 x 191 (display).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  /* the real font files, not system fallbacks */
+  @font-face { font-family: Geist; src: url("../assets/fonts/Geist-Medium.woff2") format("woff2"); font-weight: 500; font-display: block; }
+  @font-face { font-family: Geist; src: url("../assets/fonts/Geist-Regular.woff2") format("woff2"); font-weight: 400; font-display: block; }
+  @font-face { font-family: Newsreader; src: url("../assets/fonts/Newsreader-Italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: block; }
+  @font-face { font-family: "Departure Mono"; src: url("../assets/fonts/DepartureMono-Regular.woff2") format("woff2"); font-display: block; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .stage {
+    position: relative; width: 1128px; height: 191px; overflow: hidden;
+    background: #0b0b0c;
+  }
+  .stage__photo {
+    position: absolute; inset: 0;
+    background-image: url("img/band.jpg");
+    background-size: 100% auto;
+    background-position: 50% 0%;
+  }
+  /* Two layers of scrim. The flat one pulls the whole frame down so white type
+     clears contrast on any part of it; the gradient then holds the left side
+     darker still, which is where the words actually sit, while leaving the
+     statue legible on the right. */
+  /* ONE gradient, not a flat scrim stacked under a gradient -- two overlapping
+     dark layers multiply, and the first attempt drove the photo to near-black so
+     neither the statue nor the flag was visible. The left side carries the text so
+     it is darkest; the right is left almost clear so the statue reads. */
+  .stage__grad {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(11,11,12,0.80) 0%,
+      rgba(11,11,12,0.72) 30%,
+      rgba(11,11,12,0.38) 56%,
+      rgba(11,11,12,0.08) 100%
+    );
+  }
+
+  /* The copy sits ABOVE LinkedIn's Page-logo overlay. That logo eats roughly the
+     bottom 80px of the cover's left 190px, and a two-line headline cannot clear it
+     in a 191px strip -- a first attempt buried the word "borderless" behind the
+     tile, leaving only "...less." visible. One line clears it comfortably. */
+  .copy { position: absolute; left: 56px; top: 30px; right: 56px; }
+
+  /* The right-hand label runs out over bright sky, where the horizontal gradient
+     has already faded -- measured 1.44:1, a fail. Darkening the whole top band
+     would crush the skyline, so the fix is LOCAL: full-strength type plus a
+     text-shadow that darkens only the pixels around each glyph. Contrast is
+     about what is immediately behind the letterforms, not the average of the row. */
+  .labels {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: "Departure Mono", monospace;
+    font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: #fbfaf8;
+    text-shadow: 0 1px 3px rgba(6,6,7,0.92), 0 0 14px rgba(6,6,7,0.75);
+  }
+  .labels span:last-child { text-align: right; }
+
+  h1 {
+    margin-top: 13px;
+    font-family: Geist, system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 1.05;
+    letter-spacing: -0.028em;
+    color: #fbfaf8;
+    text-shadow: 0 1px 4px rgba(6,6,7,0.60);
+    white-space: nowrap;
+  }
+  /* The single accent. "borderless" is the word the whole brand rests on, so it
+     is the only thing in the banner that gets the green. */
+  h1 em {
+    font-family: Newsreader, Georgia, serif;
+    font-style: italic; font-weight: 400;
+    color: #00e07a;
+    letter-spacing: -0.01em;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="stage__photo"></div>
+    <div class="stage__grad"></div>
+    <div class="copy">
+      <div class="labels">
+        <span>Global talent mobility</span>
+        <span>O-1A &middot; EB-1A &middot; EB-2 NIW &middot; UK Global Talent</span>
+      </div>
+      <h1>Making exceptional talent <em>borderless</em>.</h1>
+    </div>
+  </div>
+</body>
+</html>
