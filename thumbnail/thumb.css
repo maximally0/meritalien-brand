@@ -1,0 +1,136 @@
+/* ==========================================================================
+   MERITALIEN — LinkedIn thumbnail (post / feed image)
+   1200 x 627  (1.91:1) — LinkedIn centre-crops to exactly this, so build to it.
+
+   Shared by route.html, statement.html and split.html.
+
+   The photo is duotoned to ink, not left in colour. The brand allows ONE accent
+   green; a colour harbour photo is full of greens (water, trees, statue) and the
+   accent would disappear into them. Mapped to ink, the single green element is
+   the only colour in the frame -- which is the whole point of the accent rule.
+   ========================================================================== */
+
+@font-face { font-family: Geist; src: url("../assets/fonts/Geist-Medium.woff2") format("woff2"); font-weight: 500; font-display: block; }
+@font-face { font-family: Geist; src: url("../assets/fonts/Geist-Regular.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: Newsreader; src: url("../assets/fonts/Newsreader-Regular.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: Newsreader; src: url("../assets/fonts/Newsreader-Italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: block; }
+@font-face { font-family: "Departure Mono"; src: url("../assets/fonts/DepartureMono-Regular.woff2") format("woff2"); font-display: block; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink:   #0b0b0c;
+  --paper: #fbfaf8;
+  --invert-muted: #b9b5ae;
+  --accent: #00e07a;
+  --mono: "Departure Mono", monospace;
+}
+
+.stage {
+  position: relative;
+  width: 1200px; height: 627px;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* the photo layer, duotoned */
+.photo {
+  position: absolute; inset: 0;
+  background-image: url("img/photo-ink.jpg");
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+/* single element, two layered gradients. Not two stacked elements -- stacking two
+   dark layers multiplies them and crushes the photo (that cost a banner rebuild).
+   The horizontal pass carries the body copy; the vertical pass darkens only the top
+   and bottom edges, where the small mono labels live. Neither crushes the middle,
+   which is where the photograph actually is. */
+.scrim {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(11,11,12,0.86) 0%,
+      rgba(11,11,12,0.30) 17%,
+      rgba(11,11,12,0.24) 78%,
+      rgba(11,11,12,0.88) 100%
+    ),
+    linear-gradient(
+      100deg,
+      rgba(11,11,12,0.94) 0%,
+      rgba(11,11,12,0.86) 34%,
+      rgba(11,11,12,0.58) 66%,
+      rgba(11,11,12,0.20) 100%
+    );
+}
+
+/* ---- stacking ------------------------------------------------------------
+   `.photo` and `.scrim` are absolutely positioned, and a positioned element
+   paints ABOVE in-flow content regardless of DOM order. Without this the copy on
+   the photo-led variants was completely hidden behind the scrim -- the DOM said
+   every text node was visible with the right colour and box, and the render
+   showed a bare photograph. The split variant only worked because its .panel
+   already carried z-index: 2.
+
+   The ::after on .route__track survived the same bug because pseudo-elements of
+   positioned ancestors join the positioned layer too, which is why the green dot
+   was the one thing still visible on an otherwise empty card. */
+.photo, .shot        { z-index: 0; }
+.scrim, .blend       { z-index: 1; }
+.stage > *:not(.photo):not(.shot):not(.scrim):not(.blend) {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---- type ---------------------------------------------------------------- */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 19px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+.serif  { font-family: Newsreader, Georgia, serif; }
+.muted  { color: var(--invert-muted); }
+.mono   { font-family: var(--mono); }
+
+/* ---- the route readout — the brand's signature component ------------------ */
+.route {
+  display: flex; align-items: center; gap: 22px;
+  font-family: var(--mono);
+  font-size: 54px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--paper);
+  white-space: nowrap;
+}
+.route__from { color: var(--invert-muted); }
+.route__track {
+  position: relative; flex: 1 1 auto; min-width: 90px; height: 2px;
+  background: rgba(251,250,248,0.42);
+}
+/* the destination marker is the ONLY green on the slide */
+.route__track::after {
+  content: ""; position: absolute; right: -7px; top: -7px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--accent);
+}
+.route__track::before {
+  content: ""; position: absolute; left: 0; top: -5px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--ink);
+  box-shadow: inset 0 0 0 2px rgba(251,250,248,0.42);
+}
+
+/* ---- wordmark ------------------------------------------------------------ */
+.wordmark {
+  font-family: Newsreader, Georgia, serif;
+  font-size: 30px;
+  letter-spacing: -0.01em;
+  color: var(--paper);
+}
+.wordmark span { color: var(--accent); }
+
+.rule { border: 0; border-top: 1px solid rgba(251,250,248,0.22); }

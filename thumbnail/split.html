@@ -1,0 +1,85 @@
+<!doctype html>
+<!--
+  MERITALIEN — LinkedIn thumbnail, variant C: SPLIT PANEL
+  1200 x 627 (1.91:1).
+
+  An ink panel carries the copy and the photograph occupies the right. This is the
+  most editorial of the three and the only one where text never sits on the photo,
+  so legibility is a layout guarantee rather than something the scrim has to buy.
+
+  The line qualifies the reader: it names the person it is for, which is what makes
+  a feed post stop a scroll. The accent lands once, on the word that carries it.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="thumb.css">
+<style>
+  .stage { display: flex; }
+  .panel {
+    position: relative; z-index: 2;
+    width: 560px; flex: 0 0 560px;
+    background: var(--ink);
+    padding: 64px 58px 56px;
+    display: flex; flex-direction: column;
+  }
+  /* a short blend so the panel edge does not read as a hard cut */
+  .blend {
+    position: absolute; left: 560px; top: 0; bottom: 0; width: 90px; z-index: 3;
+    background: linear-gradient(90deg, rgba(11,11,12,0.96) 0%, rgba(11,11,12,0) 100%);
+  }
+  .shot {
+    position: relative; z-index: 1; flex: 1;
+    background-image: url("img/photo-ink.jpg");
+    background-size: cover;
+    background-position: 72% 50%;
+  }
+  .panel .top { display: flex; justify-content: space-between; align-items: baseline; }
+  .panel .mid { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  h1 {
+    font-family: Geist, system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 60px;
+    line-height: 1.09;
+    letter-spacing: -0.030em;
+  }
+  h1 em {
+    font-family: Newsreader, Georgia, serif;
+    font-style: italic; font-weight: 400;
+    color: var(--accent);
+    letter-spacing: -0.012em;
+  }
+  .sub {
+    font-family: Newsreader, Georgia, serif;
+    font-size: 25px; line-height: 1.4; color: var(--invert-muted);
+    margin-top: 22px; max-width: 420px;
+  }
+  .panel .foot { padding-top: 20px; }
+  .site { font-family: var(--mono); font-size: 15px; letter-spacing: 0.16em;
+          text-transform: uppercase; color: var(--invert-muted); margin-top: 10px; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="panel">
+      <div class="top">
+        <span class="eyebrow" style="font-size:17px">Global talent mobility</span>
+      </div>
+
+      <div class="mid">
+        <h1>Already qualified.<br>Not yet <em>moved</em>.</h1>
+        <p class="sub">Extraordinary-talent routes, mapped to the record you have already built.</p>
+      </div>
+
+      <hr class="rule">
+      <div class="foot">
+        <span class="wordmark">Merit<span>alien</span></span>
+        <p class="site">meritalien.com</p>
+      </div>
+    </div>
+
+    <div class="shot"></div>
+    <div class="blend"></div>
+  </div>
+</body>
+</html>

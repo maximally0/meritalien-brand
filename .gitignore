@@ -29,3 +29,9 @@ banner/img/offset-test.jpg
 banner/img/candidates-sheet.jpg
 linkedin/_mock.html
 linkedin/_overlap-region.png
+
+# thumbnail scratch
+thumbnail/_bare-*.html
+thumbnail/img/crop-test.jpg
+thumbnail/img/treatment-test.jpg
+thumbnail/img/_bare-*.png
