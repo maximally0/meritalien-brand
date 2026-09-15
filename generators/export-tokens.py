@@ -9,9 +9,10 @@
 Why generate instead of hand-maintaining: three copies of a palette drift within a
 month. There is exactly one place a colour changes, and it is tokens.css.
 
-The script FAILS if it cannot classify every variable. A silent drop is the failure
-mode that matters here — a missing token looks exactly like a token that was never
-defined, and you only find out when a deck renders the wrong colour.
+The script FAILS if it cannot classify every variable, and again if two variables
+would collide on one SCSS name. Both failure modes are silent otherwise — a dropped
+token looks exactly like a token that was never defined, and you only find out when
+something renders the wrong colour.
 
 Usage:  python generators/export-tokens.py
 """
@@ -27,49 +28,32 @@ SRC = os.path.join(ROOT, "tokens", "tokens.css")
 
 # Colour families. Nesting is exactly ONE level deep (prefix -> name).
 # Deeper nesting on '-' is wrong: `--text-invert-muted` is a flat name, not
-# `text > invert > muted`, and nesting it there makes `text-invert` both a token
-# and a group, which is invalid DTCG.
+# `text > invert > muted`, and nesting it there would make `text-invert` both a
+# token and a group, which is invalid DTCG.
 COLOUR_PREFIXES = ("ink", "paper", "text", "accent", "line")
-
-TYPED = {
-    "color": "color",
-    "dimension": "dimension",
-    "number": "number",
-    "fontFamily": "fontFamily",
-    "duration": "duration",
-    "cubicBezier": "cubicBezier",
-    "shadow": "shadow",
-}
 
 
 def parse_css(path: str) -> dict[str, str]:
     """Pull `--name: value;` pairs out of the first :root block."""
     css = open(path, encoding="utf-8").read()
-    # strip comments first so commented-out values are not picked up
-    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)          # drop comments first
     root = re.search(r":root\s*\{(.*?)\}", css, re.S)
     if not root:
         raise SystemExit("no :root block found in " + path)
-    out = {}
-    for name, value in re.findall(r"--([a-z0-9-]+)\s*:\s*([^;]+);", root.group(1)):
-        out[name] = " ".join(value.split())
-    return out
-
-
-def tok(value: str, type_: str) -> dict:
-    return {"$value": value, "$type": type_}
+    return {
+        name: " ".join(value.split())
+        for name, value in re.findall(r"--([a-z0-9-]+)\s*:\s*([^;]+);", root.group(1))
+    }
 
 
 def build(t: dict[str, str]) -> tuple[dict, set[str]]:
     """Return (token tree, set of css variable names consumed)."""
     used: set[str] = set()
-    seen: list[str] = []
 
     def take(name: str, node: dict, key: str, type_: str) -> None:
         if name in t:
-            node[key] = tok(t[name], type_)
+            node[key] = {"$value": t[name], "$type": type_}
             used.add(name)
-            seen.append(name)
 
     out: dict = {}
 
@@ -80,7 +64,6 @@ def build(t: dict[str, str]) -> tuple[dict, set[str]]:
         # the bare token, e.g. --accent, --text. Keyed DEFAULT rather than set on
         # the family itself: a node with both $value and children is invalid DTCG.
         take(prefix, fam, "DEFAULT", "color")
-        # one level of suffix, kept flat
         for k in sorted(t):
             if k.startswith(prefix + "-"):
                 take(k, fam, k[len(prefix) + 1:], "color")
@@ -101,9 +84,10 @@ def build(t: dict[str, str]) -> tuple[dict, set[str]]:
 
     # ----------------------------------------------------------------- space --
     out["space"] = {}
-    for k in sorted(t, key=lambda x: int(x[2:]) if x.startswith("s-") and x[2:].isdigit() else 0):
-        if k.startswith("s-") and k[2:].isdigit():
-            take(k, out["space"], k[2:], "dimension")
+    steps = sorted((k for k in t if k.startswith("s-") and k[2:].isdigit()),
+                   key=lambda k: int(k[2:]))
+    for k in steps:
+        take(k, out["space"], k[2:], "dimension")
 
     # ---------------------------------------------------------------- radius --
     out["radius"] = {}
@@ -136,8 +120,7 @@ def build(t: dict[str, str]) -> tuple[dict, set[str]]:
 
 
 def walk(node, path=()):
-    """Yield every token leaf. Recurses even into a node that has $value, so the
-    count cannot silently under-report."""
+    """Yield every token leaf, recursing even into a node carrying $value."""
     if isinstance(node, dict):
         if "$value" in node:
             yield path, node
@@ -149,38 +132,45 @@ def walk(node, path=()):
 def main() -> int:
     t = parse_css(SRC)
     tokens, used = build(t)
-
-    missing = sorted(set(t) - used)
     print(f"  parsed {len(t)} variables from tokens.css")
-    if missing:
+
+    if missing := sorted(set(t) - used):
         print(f"\n  UNCLASSIFIED ({len(missing)}) — the export would be incomplete:")
         for m in missing:
             print(f"    --{m}: {t[m]}")
         print("\n  Add these to a family in build() before shipping.")
         return 1
 
-    exported = list(walk(tokens))
-    print(f"  exported {len(exported)} tokens — every variable accounted for")
+    print(f"  exported {len(list(walk(tokens)))} tokens — every variable accounted for")
 
     os.makedirs(os.path.join(ROOT, "tokens"), exist_ok=True)
-    with open(os.path.join(ROOT, "tokens", "tokens.json"), "w", encoding="utf-8", newline="\n") as fh:
+    json_path = os.path.join(ROOT, "tokens", "tokens.json")
+    with open(json_path, "w", encoding="utf-8", newline="\n") as fh:
         json.dump(tokens, fh, indent=2, ensure_ascii=False)
         fh.write("\n")
 
+    # SCSS names allow letters, digits and underscores; a bare hyphen would read as
+    # subtraction, so --s-1 becomes $s_1. A plain replace is all that is needed.
     lines = [
         "// Meritalien design tokens — SCSS variables",
         "// GENERATED from tokens/tokens.css by generators/export-tokens.py.",
         "// Do not edit by hand: edit tokens.css and re-run the generator.",
         "",
     ]
+    seen: dict[str, str] = {}
     for k, v in sorted(t.items()):
-        safe = re.sub(r"-(\d)", r"_$1", k).replace("-", "_")
+        safe = k.replace("-", "_")
+        if safe in seen:
+            raise SystemExit(f"SCSS collision: --{k} and --{seen[safe]} both map to ${safe}")
+        seen[safe] = k
         lines.append(f"${safe}: {v};")
-    with open(os.path.join(ROOT, "tokens", "tokens.scss"), "w", encoding="utf-8", newline="\n") as fh:
+
+    with open(os.path.join(ROOT, "tokens", "tokens.scss"), "w",
+              encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
 
-    print(f"  tokens.json  written")
-    print(f"  tokens.scss  {len(t)} variables")
+    print("  tokens.json  written")
+    print(f"  tokens.scss  {len(seen)} variables, {len(set(seen))} unique")
     return 0
 
 
