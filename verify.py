@@ -166,14 +166,16 @@ for srcf, name, deck, want, label in cases:
     if r.returncode != 0:
         check(False, f"{name} renders", r.stderr[-120:])
         continue
-    doc = fitz.open(os.path.join(out, name))
-    w, h = doc[0].rect.width, doc[0].rect.height
+    pdf_path = os.path.join(out, name)
+    with fitz.open(pdf_path) as doc:
+        w, h = doc[0].rect.width, doc[0].rect.height
+        page_count = doc.page_count
     ok = abs(w - want[0]) < 1.5 and abs(h - want[1]) < 1.5
     check(ok, f"{name} page box is {label}", f"{w:.0f}x{h:.0f}pt (want {want[0]:.0f}x{want[1]:.0f})")
-    check(doc.page_count >= 1, f"{name} has pages", f"{doc.page_count}")
+    check(page_count >= 1, f"{name} has pages", f"{page_count}")
     # fonts must be embedded or the PDF substitutes on another machine
-    fonts = set(re.findall(rb"/FontName\s*/([A-Za-z0-9+\-]+)", open(
-        os.path.join(out, name), "rb").read()))
+    with open(pdf_path, "rb") as fh:
+        fonts = set(re.findall(rb"/FontName\s*/([A-Za-z0-9+\-]+)", fh.read()))
     check(len(fonts) > 0, f"{name} embeds fonts", f"{len(fonts)} faces")
 
 print()
@@ -277,5 +279,10 @@ if fails:
         print(f"  - {f}")
 print("=" * 72)
 
-shutil.rmtree(tmp, ignore_errors=True)
+try:
+    shutil.rmtree(tmp)
+except OSError as e:
+    # On Windows an unclosed handle blocks deletion. Say so rather than leaking
+    # 36KB per run into the temp directory silently.
+    print(f"  (temp dir not removed: {e})")
 sys.exit(1 if fails else 0)
