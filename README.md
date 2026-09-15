@@ -154,7 +154,14 @@ python generators/render-pdf.py templates/deck-slide.html out/deck.pdf --deck
 python generators/render-pdf.py templates/onepager.html out/onepager.pdf
 ```
 
-`export-tokens.py` **fails loudly** if it cannot classify a variable. A silently dropped
+```bash
+python verify.py     # tokens complete + valid, icons from one source,
+                     # PDFs the right page size with fonts embedded,
+                     # templates clean, no external requests
+```
+
+`export-tokens.py` **fails loudly** if it cannot classify a variable, and again if two
+variables would collide on one SCSS name. Both are silent failure modes otherwise. A silently dropped
 token looks exactly like a token that was never defined, and you only find out when
 something renders the wrong colour.
 
