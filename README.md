@@ -63,6 +63,9 @@ templates/
   onepager.html        A4 document
   deck-slide.html      16:9 slide
   print.css            print/PDF stylesheet
+examples/
+  deck-slide.pdf       rendered from templates/deck-slide.html (2 pages, 960x540pt)
+  onepager.pdf         rendered from templates/onepager.html (A4, 210x297mm)
 generators/
   export-tokens.py     tokens.css -> tokens.json + tokens.scss
   make-icons.py        favicon.svg -> the PNG icon family
