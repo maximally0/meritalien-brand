@@ -1,0 +1,291 @@
+<!doctype html>
+<!--
+  MERITALIEN — motion demo
+  ============================================================
+  Every animation in the system, running on one page, with the real code.
+  Open it in a browser and scroll.
+
+  This is the reference for "how does it move". Each block is labelled with its
+  exact spec, and the numbers match docs/02-motion.md.
+
+  To see the reduced-motion behaviour: turn on "Reduce motion" in your OS
+  accessibility settings and reload. The content stays; the movement goes.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meritalien — motion demo</title>
+
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/extra.css">
+
+<style>
+  /* ---- page furniture for the demo only ---- */
+  .sticky-demo-nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    padding-block: var(--s-4);
+    border-bottom: 1px solid transparent;
+    transition: background-color var(--dur) var(--ease),
+                border-color var(--dur) var(--ease);
+  }
+  .sticky-demo-nav.is-solid {
+    background: color-mix(in srgb, var(--paper-100) 86%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom-color: var(--line);
+  }
+  .sticky-demo-nav .nav__inner { display: flex; justify-content: space-between; align-items: center; }
+  .spec {
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .04em;
+    color: var(--text-muted); border-left: 2px solid var(--line-strong);
+    padding-left: var(--s-3); margin-top: var(--s-3); line-height: 1.7;
+  }
+  .spec b { color: var(--text); font-weight: 500; }
+  .demo-label {
+    font-family: var(--font-mono); font-size: var(--t-mono); letter-spacing: var(--tr-mono);
+    text-transform: uppercase; color: var(--text-faint);
+    padding-bottom: var(--s-2); border-bottom: 1px solid var(--line);
+    margin-bottom: var(--s-6);
+  }
+  .swatch { height: 56px; border-radius: var(--r-lg); border: 1px solid var(--line); }
+  .spacer { height: 42vh; }
+  .box {
+    height: 84px; border-radius: var(--r-lg); border: 1px dashed var(--line-strong);
+    display: grid; place-items: center; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: .1em; color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="sticky-demo-nav" id="demoNav">
+  <div class="shell nav__inner">
+    <span class="nav__mark">Merit<span>alien</span></span>
+    <span class="eyebrow" style="margin:0">Motion demo</span>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ============================================================ 1 REVEAL -->
+<section class="band" style="padding-top:22vh">
+  <div class="shell">
+    <p class="demo-label">01 — Reveal · the workhorse</p>
+    <h1 class="display" style="max-width:20ch">Everything translates. Nothing fades in place.</h1>
+    <p class="spec">
+      <b>translate</b> 22px up (or 28px from left / right) · <b>duration</b> 420ms ·
+      <b>curve</b> cubic-bezier(.16,1,.3,1) · <b>trigger</b> 5% visible, bottom margin
+      pulled in 12% · <b>once</b>
+    </p>
+
+    <div class="grid grid-3" style="margin-top:var(--s-16)">
+      <div class="box" data-reveal>data-reveal · up 22px</div>
+      <div class="box" data-reveal="left">data-reveal="left" · 28px</div>
+      <div class="box" data-reveal="right">data-reveal="right" · 28px</div>
+    </div>
+    <p class="spec">Scroll away and back — they do not re-run. Reveals fire once, then unobserve.</p>
+  </div>
+</section>
+
+<!-- =========================================================== 2 STAGGER -->
+<section class="band band--paper-200">
+  <div class="shell">
+    <p class="demo-label">02 — Stagger</p>
+    <h2 class="display" data-reveal style="max-width:24ch">A group cascades. A crowd does not.</h2>
+    <p class="spec">
+      <b>step</b> 70ms · <b>cap</b> 8 items for groups, 6 for siblings ·
+      set via <b>--reveal-delay</b> on each child, not baked into the component
+    </p>
+    <p class="spec" style="border-left-color:var(--accent-line)">
+      The cap is the point. Without it a 30-card grid takes two seconds to finish and
+      reads as slow rather than choreographed.
+    </p>
+
+    <div class="grid grid-4" data-stagger style="margin-top:var(--s-10)">
+      <div class="box" data-reveal>0ms</div>
+      <div class="box" data-reveal>70ms</div>
+      <div class="box" data-reveal>140ms</div>
+      <div class="box" data-reveal>210ms</div>
+      <div class="box" data-reveal>280ms</div>
+      <div class="box" data-reveal>350ms</div>
+      <div class="box" data-reveal>420ms</div>
+      <div class="box" data-reveal>cap · 490ms</div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================== 3 COUNTERS -->
+<section class="band">
+  <div class="shell">
+    <p class="demo-label">03 — Counters</p>
+    <h2 class="display" data-reveal style="max-width:22ch">Numbers arrive, they do not appear.</h2>
+    <p class="spec">
+      <b>duration</b> 1400ms · <b>curve</b> easeOutExpo (same curve) ·
+      <b>trigger</b> 40% visible · <b>once</b> · reduced motion jumps to the final value
+    </p>
+
+    <div class="grid grid-3" style="margin-top:var(--s-10)">
+      <div>
+        <p class="stat__num" data-count-to="31">0</p>
+        <p class="eyebrow" style="margin-top:var(--s-2)">Stories</p>
+      </div>
+      <div>
+        <p class="stat__num" data-count-to="101">0</p>
+        <p class="eyebrow" style="margin-top:var(--s-2)">Pages</p>
+      </div>
+      <div>
+        <p class="stat__num" data-count-to="86" data-count-suffix="%">0</p>
+        <p class="eyebrow" style="margin-top:var(--s-2)">Image weight saved</p>
+      </div>
+    </div>
+    <p class="spec">Every stat carries a source and a date. These three are the real build numbers.</p>
+  </div>
+</section>
+
+<!-- ============================================================ 4 MARQUEE -->
+<section class="band band--ink on-ink">
+  <div class="shell">
+    <p class="demo-label">04 — Marquee</p>
+    <h2 class="display" data-reveal style="max-width:24ch">Logo walls slide, they do not sit.</h2>
+    <p class="spec">
+      <b>track</b> width max-content · <b>container must clip</b> — without
+      <code>overflow:hidden</code> the track overflows the page ·
+      paused under reduced motion
+    </p>
+  </div>
+
+  <div class="marquee" style="margin-top:var(--s-10)">
+    <div class="marquee__row">
+      <div class="marquee__track">
+        <span class="marquee__item">UNITED STATES</span>
+        <span class="marquee__item">UNITED KINGDOM</span>
+        <span class="marquee__item">CANADA</span>
+        <span class="marquee__item">AUSTRALIA</span>
+        <span class="marquee__item">GERMANY</span>
+        <span class="marquee__item">SINGAPORE</span>
+      </div>
+    </div>
+    <div class="marquee__row marquee__row--rev">
+      <div class="marquee__track">
+        <span class="marquee__item">O-1A</span>
+        <span class="marquee__item">EB-1A</span>
+        <span class="marquee__item">EB-2 NIW</span>
+        <span class="marquee__item">GLOBAL TALENT</span>
+        <span class="marquee__item">BLUE CARD</span>
+        <span class="marquee__item">SUBCLASS 858</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================= 5 SCRUB/PIN -->
+<section class="band" data-pin>
+  <div class="shell">
+    <p class="demo-label">05 — Scrub sequence · desktop ≥56rem only</p>
+    <h2 class="display" style="max-width:26ch">The scroll position is the easing.</h2>
+    <p class="spec">
+      <b>trigger</b> top 82% · <b>end</b> +=90% · <b>scrub</b> 0.6 ·
+      <b>ease</b> none · <b>pin false</b> · translate-only at 34px ·
+      stagger 0.35 · desktop only
+    </p>
+
+    <div style="margin-top:var(--s-16); display:grid; gap:var(--s-4)">
+      <p class="lead" data-pin-line>Three lines, each translating 34px with a 0.35 stagger.</p>
+      <p class="lead" data-pin-line>No opacity is animated — a scrub tween renders its start state at progress 0, so fading would leave this invisible if the trigger never fired.</p>
+      <p class="lead" data-pin-line>Translate-only means a dead trigger costs a 34px offset and nothing else.</p>
+    </div>
+    <p class="spec" style="border-left-color:var(--accent-line)">
+      <b>ease: "none" is deliberate.</b> Adding a curve on top of the scroll curve makes
+      the motion fight your hand.
+    </p>
+  </div>
+</section>
+
+<!-- ======================================================= 6 COLLAPSIBLE -->
+<section class="band band--paper-200">
+  <div class="shell">
+    <p class="demo-label">06 — Collapsible</p>
+    <h2 class="display" data-reveal style="max-width:24ch">Collapse, do not stack.</h2>
+    <p class="spec">
+      The single biggest mobile fix. The stories index was 24.5 screens; collapsing to
+      nine and filtering took it to 4.1.
+    </p>
+
+    <div class="collapsible" style="margin-top:var(--s-8)" data-collapsible>
+      <button class="collapsible__toggle" type="button" aria-expanded="false" aria-controls="demoPanel">
+        <span class="collapsible__label">Sources</span>
+        <span class="collapsible__count">4</span>
+        <span class="collapsible__sign" aria-hidden="true">+</span>
+      </button>
+      <div class="collapsible__panel" id="demoPanel" hidden>
+        <div class="prose" style="padding-top:var(--s-4)">
+          <p>Panel content. Real content, not padding — a fixed-height panel with dead
+          space reads as unfinished.</p>
+          <p>Two or three short paragraphs. Keep prose inside 50–75 characters per line.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================================================== 7 ACCENT DISCIPLINE -->
+<section class="band">
+  <div class="shell">
+    <p class="demo-label">07 — Accent discipline · not an animation, but the same idea</p>
+    <h2 class="display" data-reveal style="max-width:26ch">The green is a signal, not a highlight.</h2>
+    <p class="spec">
+      It appears on <b>exactly three things</b>: the word "borders" in the hero, the
+      globe arcs, and the primary CTA. A fourth use and it stops meaning <i>go</i>.
+    </p>
+
+    <div class="grid grid-4" style="margin-top:var(--s-10)">
+      <div><div class="swatch" style="background:var(--ink-900)"></div>
+        <p class="eyebrow" style="margin-top:var(--s-2)">--ink-900</p></div>
+      <div><div class="swatch" style="background:var(--paper-200)"></div>
+        <p class="eyebrow" style="margin-top:var(--s-2)">--paper-200</p></div>
+      <div><div class="swatch" style="background:var(--accent)"></div>
+        <p class="eyebrow" style="margin-top:var(--s-2)">--accent</p></div>
+      <div><div class="swatch" style="background:var(--accent-ink)"></div>
+        <p class="eyebrow" style="margin-top:var(--s-2)">--accent-ink · AA on paper</p></div>
+    </div>
+    <p class="spec" style="border-left-color:var(--accent-line)">
+      <b>#00e07a on paper measures 2.0:1</b> — it must never be used for text there.
+      Use <b>--accent-ink #00854a</b>.
+    </p>
+  </div>
+</section>
+
+<div class="spacer"></div>
+</main>
+
+<footer class="footer band--ink on-ink" style="padding-block:var(--s-16) var(--s-8)">
+  <div class="shell">
+    <p class="eyebrow">Motion demo · open templates/motion-demo.html</p>
+    <p class="lead" style="margin-top:var(--s-4); color:var(--text-invert-muted); max-width:60ch">
+      Everything above runs on the real <code style="font-family:var(--font-mono); font-size:.9em">app.js</code>
+      and <code style="font-family:var(--font-mono); font-size:.9em">craft.js</code>.
+      Specs: <code style="font-family:var(--font-mono); font-size:.9em">docs/02-motion.md</code>.
+    </p>
+  </div>
+</footer>
+
+<script src="../assets/js/vendor/gsap.min.js" defer></script>
+<script src="../assets/js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="../assets/js/vendor/lenis.min.js" defer></script>
+<script src="../assets/js/app.js" defer></script>
+<script src="../assets/js/craft.js" defer></script>
+
+<script>
+  // the demo nav mirrors the real nav's solid-on-scroll behaviour
+  document.addEventListener("DOMContentLoaded", () => {
+    const nav = document.getElementById("demoNav");
+    const apply = (y) => nav.classList.toggle("is-solid", y > 90);
+    window.addEventListener("scroll", () => apply(window.scrollY), { passive: true });
+    apply(window.scrollY);
+  });
+</script>
+</body>
+</html>

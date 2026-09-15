@@ -1,0 +1,8 @@
+# generated output
+out/
+__pycache__/
+*.pyc
+
+# OS noise
+.DS_Store
+Thumbs.db

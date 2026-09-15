@@ -1,0 +1,157 @@
+/* ==========================================================================
+   MERITALIEN — print stylesheet
+   For PDF export via headless Chrome, and for actual printing.
+
+   Usage:
+     <link rel="stylesheet" href="../tokens/tokens.css">
+     <link rel="stylesheet" href="../assets/css/base.css">
+     <link rel="stylesheet" href="print.css">
+
+   Render (see docs/06-cookbook.md):
+     chrome --headless --disable-gpu --no-pdf-header-footer \
+       --user-data-dir=/tmp/chrome-pdf \
+       --print-to-pdf="/ABSOLUTE/path/out.pdf" "file:///ABSOLUTE/path/doc.html"
+   The output path MUST be absolute — a relative one fails with Access is denied (0x5).
+   ========================================================================== */
+
+/* One .page element == one PDF page. Choose one of these; do not mix. */
+
+/* A4 portrait — reports, one-pagers */
+@page {
+  size: A4;                 /* 210 × 297mm */
+  margin: 0;                /* the .page element supplies its own padding */
+}
+
+/* 16:9 deck — 1280×720 CSS px == 960×540pt exactly (CSS px × 0.75 = pt) */
+/*
+@page { size: 1280px 720px; margin: 0; }
+*/
+
+@media print {
+  /* ---- keep the design: without this the ink bands print white ---- */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ---- THE CRITICAL ONE ----
+     A reveal that has not fired is opacity:0. Export before the animation runs and
+     you ship a blank page. Never print a half-revealed document. */
+  [data-reveal],
+  [data-pin-line],
+  [data-see] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* ---- nothing that only works on screen ---- */
+  .nav,
+  .nav__drawer,
+  .footer__cols,
+  .marquee,
+  .hero__scroll,
+  .btn-row,
+  .skip,
+  .story-more,
+  .chips,
+  [data-count-to] { /* the number must be final, not mid-animation */
+    display: none !important;
+  }
+
+  /* ---- page mechanics ---- */
+  .page {
+    position: relative;
+    width: 210mm;
+    height: 297mm;
+    padding: 18mm 16mm;
+    overflow: hidden;          /* careful: this clips SILENTLY. Verify visually. */
+    background: var(--paper-100);
+    color: var(--text);
+    page-break-after: always;
+    break-after: page;
+  }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+
+  /* a dark page: full bleed to the paper edge */
+  .page--ink {
+    background: var(--ink-900);
+    color: var(--text-invert);
+    padding: 18mm 16mm;
+  }
+  .page--ink .eyebrow { color: var(--text-invert-muted); }
+
+  /* ---- typography on paper ----
+     The fluid clamps resolve to their vw-based middle values in a headless
+     print context, which is unpredictable. Pin the sizes instead. */
+  .display { font-size: 40pt; line-height: 0.98; letter-spacing: -0.035em; }
+  .h1      { font-size: 28pt; line-height: 1.08; letter-spacing: -0.022em; }
+  .h2      { font-size: 22pt; line-height: 1.08; letter-spacing: -0.022em; }
+  .lead    { font-size: 11.5pt; line-height: 1.45; }
+  .body    { font-size: 9.5pt;  line-height: 1.55; }
+  .eyebrow { font-size: 7.5pt;  letter-spacing: 0.16em; text-transform: uppercase;
+             font-family: var(--font-mono); color: var(--text-faint); }
+
+  /* ---- paper width is not a viewport ----
+     A4 is 794px and Letter is 816px CSS-wide, both under the site's 60rem (960px)
+     breakpoint — so base.css's responsive collapse fires during PDF export and
+     .grid-3 quietly becomes two columns. If a document wants three, say so:
+
+       .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }            */
+
+  /* ---- avoid orphaned headings ---- */
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+  p, li { orphans: 3; widows: 3; }
+
+  /* ---- hairlines that read on screen disappear on paper ----
+     --line is rgba(...,.12). At print resolution that is invisible, so cards lose
+     their edges and the layout reads as loose text. Print gets the stronger value. */
+  .card, .callout, .tag, .table-wrap, .collapsible {
+    border-color: var(--line-strong) !important;
+  }
+
+  /* ---- no link underlines or URLs leaking into the paper ---- */
+  a { color: inherit; text-decoration: none; }
+  a[href]::after { content: none !important; }
+
+  /* ---- keep the accent honest on paper: #00e07a is 2.0:1, unreadable.
+     The readable variant is --accent-ink. ---- */
+  .accent-text { color: var(--accent-ink) !important; }
+}
+
+/* ==========================================================================
+   Screen preview — so the HTML looks like the PDF while you are editing it.
+   Harmless in print; invaluable before you export.
+   ========================================================================== */
+@media screen {
+  body {
+    background: #6b6b6b;               /* paper stock */
+    display: grid;
+    justify-content: center;
+    gap: 24px;
+    padding: 32px 16px;
+    font-family: var(--font-sans);
+  }
+  .page {
+    position: relative;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 18mm 16mm;
+    background: var(--paper-100);
+    color: var(--text);
+    box-shadow: 0 2px 4px rgba(0,0,0,.2), 0 18px 48px -12px rgba(0,0,0,.45);
+  }
+  .page--ink { background: var(--ink-900); color: var(--text-invert); }
+  .page--ink .eyebrow { color: var(--text-invert-muted); }
+  .display { font-size: 40pt; line-height: .98; letter-spacing: -.035em; }
+  .h1 { font-size: 28pt; line-height: 1.08; letter-spacing: -.022em; }
+  .h2 { font-size: 22pt; line-height: 1.08; letter-spacing: -.022em; }
+  .lead { font-size: 11.5pt; line-height: 1.45; }
+  .body { font-size: 9.5pt; line-height: 1.55; }
+  .eyebrow { font-size: 7.5pt; letter-spacing: .16em; text-transform: uppercase;
+             font-family: var(--font-mono); color: var(--text-faint); }
+  body.page-deck .page { width: 1280px; min-height: 720px; }
+}

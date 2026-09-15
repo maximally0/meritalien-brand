@@ -1,0 +1,117 @@
+<!doctype html>
+<!--
+  MERITALIEN — section starter
+  ============================================================
+  Copy this file, keep the <head> wiring, replace the section body.
+  Open it directly in a browser; everything works from disk.
+
+  Rules this file already obeys, so keep them:
+    - .band + .shell for rhythm, never hand-rolled padding
+    - only --s-* spacing values
+    - data-reveal on arrivals, data-stagger on the container
+    - dark sections carry `on-ink` (it restates the text colours)
+    - the accent appears exactly once in this section
+
+  Font paths: ../assets/fonts/ is relative to the CSS file, not this HTML.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meritalien — section starter</title>
+
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/extra.css">
+
+<style>
+  /* page-local styling only. If you need something reusable, it belongs in
+     components.css — not here. */
+  .demo-head { padding-block: var(--s-10) var(--s-6); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SECTION — copy from here
+     ============================================================ -->
+<section class="band">
+  <div class="shell">
+
+    <p class="eyebrow" data-reveal>The system</p>
+
+    <h2 class="display" data-reveal style="max-width:22ch">
+      Four layers. <em>One</em> journey.
+    </h2>
+
+    <p class="lead" data-reveal style="max-width:52ch; margin-top:var(--s-4)">
+      One sentence in the serif register that states the thing. Not an explanation —
+      a position. If it needs a second sentence, the first one is doing too little.
+    </p>
+
+    <div class="grid grid-3" data-stagger style="margin-top:var(--s-10)">
+
+      <article class="card" data-reveal>
+        <p class="eyebrow">01 · Discover</p>
+        <h3 class="card__title">Know where you can go.</h3>
+        <p class="card__body" style="color:var(--text-muted)">
+          Body copy stays in Geist, sits between 50 and 75 characters, and never
+          hedges. Short sentences.
+        </p>
+      </article>
+
+      <article class="card" data-reveal>
+        <p class="eyebrow">02 · Build</p>
+        <h3 class="card__title">What you build is what unlocks the move.</h3>
+        <p class="card__body" style="color:var(--text-muted)">
+          Every card is the same shape. The vocabulary is fixed on purpose — a system
+          with five card styles has no card language.
+        </p>
+      </article>
+
+      <article class="card" data-reveal>
+        <p class="eyebrow">03 · Move</p>
+        <h3 class="card__title">Then it's legal.</h3>
+        <p class="card__body" style="color:var(--text-muted)">
+          The accent appears once in this section — on the button below, nowhere else.
+        </p>
+      </article>
+
+    </div>
+
+    <div class="btn-row" style="margin-top:var(--s-10)">
+      <a class="btn btn--primary" href="#">
+        Find your route <span class="btn__arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ============================================================
+     SECTION — to here
+     ============================================================ -->
+
+
+<!-- a dark section, to show the `on-ink` requirement -->
+<section class="band band--ink on-ink">
+  <div class="shell">
+    <p class="eyebrow" data-reveal>Note</p>
+    <h2 class="display" data-reveal style="max-width:24ch">
+      Dark surfaces must restate their colours.
+    </h2>
+    <p class="lead" data-reveal style="max-width:52ch; margin-top:var(--s-4);
+       color:var(--text-invert-muted)">
+      Without <code style="font-family:var(--font-mono); font-size:.9em">on-ink</code>,
+      the eyebrow renders at 2.92:1 — invisible. It is not optional.
+    </p>
+  </div>
+</section>
+
+
+<script src="../assets/js/vendor/gsap.min.js" defer></script>
+<script src="../assets/js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="../assets/js/app.js" defer></script>
+<script src="../assets/js/craft.js" defer></script>
+</body>
+</html>

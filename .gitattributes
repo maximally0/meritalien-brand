@@ -1,0 +1,10 @@
+# Normalise line endings so the repo is identical on every machine.
+# Windows checkouts still get CRLF in the working tree via core.autocrlf.
+* text=auto eol=lf
+
+# Fonts and images are binary — never touch them.
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.png   binary
+*.jpg   binary

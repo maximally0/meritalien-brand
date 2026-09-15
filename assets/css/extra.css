@@ -1,0 +1,990 @@
+/* ==========================================================================
+   MERITALIEN — additions: two-column layouts, data tables, source lists,
+   sticky asides, print. Appended to components.css by build.
+   ========================================================================== */
+
+/* ---------- split (prose + sticky aside) ---------- */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+}
+@media (max-width: 60rem) { .split { grid-template-columns: minmax(0, 1fr); } }
+
+.aside-sticky { position: sticky; top: 6rem; }
+@media (max-width: 60rem) { .aside-sticky { position: static; } }
+
+/* ---------- data tables ---------- */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--paper-100);
+}
+@media (max-width: 48rem) { .table-wrap { border: 0; background: none; } }
+
+table.opps { width: 100%; border-collapse: collapse; }
+table.opps thead th {
+  text-align: left;
+  padding: var(--s-4) var(--s-5);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+table.opps tbody tr { border-bottom: 1px solid var(--line); }
+table.opps tbody tr:last-child { border-bottom: 0; }
+table.opps tbody td {
+  padding: var(--s-4) var(--s-5);
+  vertical-align: top;
+  padding-right: var(--s-5);
+}
+table.opps tbody tr { transition: background-color var(--dur-fast) var(--ease); }
+table.opps tbody tr:hover { background: var(--paper-200); }
+
+@media (max-width: 48rem) {
+  .table-wrap { border: 0; }
+  table.opps thead { display: none; }
+  table.opps, table.opps tbody, table.opps tr, table.opps td { display: block; width: 100%; }
+  table.opps tr {
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: var(--s-4) var(--s-5);
+    margin-bottom: var(--s-4);
+    background: var(--paper-100);
+  }
+  table.opps td { padding: 0 0 var(--s-2); }
+  table.opps td:last-child { padding-bottom: 0; }
+}
+
+/* ---------- source lists ---------- */
+.srclist { display: grid; gap: var(--s-3); }
+.srclist li { padding-left: var(--s-6); position: relative; font-size: var(--t-small); }
+.srclist li::before {
+  content: ""; position: absolute; left: 0; top: 0.7em;
+  width: 8px; height: 1px; background: var(--accent);
+}
+.srclist a { border-bottom: 1px solid var(--accent-line); }
+.srclist a:hover { border-bottom-color: var(--accent); }
+
+/* ---------- inline code in prose ---------- */
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--paper-200);
+  padding: 2px 5px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+}
+
+/* ---------- blockquote ---------- */
+.prose blockquote {
+  border-left: 1px solid var(--accent);
+  padding-left: var(--s-5);
+  margin-block: var(--s-6);
+  font-family: var(--font-serif);
+  font-size: var(--t-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-muted);
+}
+.prose blockquote p { max-width: 46ch; }
+
+/* ---------- door rows used as content blocks ---------- */
+.door[style*="align-items:start"] { padding-block: var(--s-8); }
+
+/* ==========================================================================
+   PRINT — people print pathway and guide pages. Give them a clean document.
+   ========================================================================== */
+@media print {
+  :root {
+    --ink-900: #fff; --ink-800: #fff; --ink-700: #fff;
+    --paper-100: #fff; --paper-200: #fff; --paper-300: #fff;
+    --text: #000; --text-muted: #333; --text-faint: #555;
+    --text-invert: #000; --text-invert-muted: #333;
+    --line: #ccc; --line-strong: #999;
+    --line-invert: #ccc; --line-invert-strong: #999;
+  }
+  .nav, .footer, .hero__scroll, .vslot, .marquee, .btn, .btn-row,
+  .nav__toggle, .skip, [data-globe], .globe-stage { display: none !important; }
+
+  body { font-size: 11pt; line-height: 1.45; background: #fff; color: #000; }
+  .band, .band--tight { padding-block: 1.2rem; }
+  .shell { max-width: none; padding-inline: 0; }
+  .page-head { padding-top: 0; padding-bottom: 1rem; border-bottom: 1px solid #ccc; }
+
+  /* reveal everything — nothing should be invisible on paper */
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+
+  h1 { font-size: 20pt; }
+  h2 { font-size: 14pt; margin-top: 1.2rem; }
+  h3 { font-size: 12pt; }
+  .lead { font-size: 12pt; color: #333; }
+  .prose { max-width: none; }
+
+  a { text-decoration: none; color: #000; }
+  /* show where links go, since a printed link is dead */
+  .prose a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #555;
+    word-break: break-all;
+  }
+
+  .card, .callout, .table-wrap {
+    border: 1px solid #ccc !important;
+    background: #fff !important;
+    break-inside: avoid;
+  }
+  .split { grid-template-columns: 1fr; }
+  .aside-sticky { position: static; }
+  table.opps thead { display: table-header-group; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .door { break-inside: avoid; padding-block: 0.6rem; }
+  .door::before { display: none; }
+}
+
+/* ==========================================================================
+   TOUCH TARGETS
+   WCAG 2.2 SC 2.5.8 sets 24x24 CSS px as the AA minimum; 44x44 is the AAA /
+   platform recommendation. A pointer is precise and a thumb is not, so the
+   target size is raised only on coarse pointers. Desktop keeps the designed
+   34px chrome density, which is what makes the nav read as considered rather
+   than as a consumer app.
+   ========================================================================== */
+@media (pointer: coarse) {
+  .btn {
+    height: 44px;
+    padding-inline: var(--s-5);
+  }
+  .btn--xl { height: 56px; padding-inline: var(--s-6); }
+  .btn--quiet { height: 44px; }
+
+  .nav__mark {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .nav__toggle { width: 44px; height: 44px; }
+  .nav__link { display: inline-flex; align-items: center; min-height: 44px; }
+  .nav__drawer a { min-height: 48px; display: flex; align-items: center; }
+
+  select.select { min-height: 56px; }
+  .collapsible__toggle { min-height: 48px; }
+
+  /* chips are links in the Build preview — they need a real target */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 8px 14px;
+  }
+
+  /* footer and card-title links: give them height without changing type size */
+  .footer__col a { display: inline-flex; align-items: center; min-height: 44px; }
+  .footer__bottom a { display: inline-flex; align-items: center; min-height: 44px; }
+  .card__title a,
+  .card__foot a,
+  .srclist a {
+    display: inline-block;
+    padding-block: 11px;
+  }
+  .brief-item { min-height: 44px; }
+  .door { min-height: 44px; }
+  .crumbs a { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
+/* Chips: clear 44px cleanly on touch (39.99px failed the gate on subpixel). */
+@media (pointer: coarse) {
+  .tag { min-height: 44px; }
+}
+
+/* Card and story footer links: 24px minimum at every pointer type (WCAG 2.2 AA).
+   These sit outside prose so the inline-link exemption does not apply. */
+.card__foot a,
+.card__foot .small,
+.story > a.small,
+.story .card__foot a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+}
+
+/* ==========================================================================
+   VERTICAL DOORS
+   The four layers and the route directory read as stacked rows separated by
+   full-width hairlines, not as a table. Everything inside a door is vertical.
+   ========================================================================== */
+.doors--stacked {
+  display: block;
+  border-top: 1px solid var(--line);
+}
+.doors--stacked .door,
+.door--stack {
+  display: block;
+  border-bottom: 1px solid var(--line);
+  padding-block: clamp(1.5rem, 3.4vw, 2.4rem);
+  position: relative;
+  transition: padding-left var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+.door--stack > * { display: block; }
+
+.door__num {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+  margin-bottom: var(--s-3);
+}
+.door__name {
+  display: block;
+  font-weight: 500;
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.door__q {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.7vw, 1.2rem);
+  color: var(--text-muted);
+  margin-top: var(--s-2);
+  max-width: 52ch;
+}
+.door__desc {
+  display: block;
+  font-size: var(--t-small);
+  color: var(--text-faint);
+  margin-top: var(--s-2);
+  max-width: 62ch;
+}
+.door__meta,
+.door__arrow {
+  display: inline-block;
+  margin-top: var(--s-4);
+}
+.door__meta { margin-right: var(--s-4); }
+.door__arrow {
+  color: var(--accent-ink);
+  font-size: var(--t-small);
+  transition: transform var(--dur) var(--ease);
+}
+.door--stack:hover { padding-left: var(--s-5); background: var(--paper-200); }
+.door--stack:hover .door__arrow { transform: translateX(6px); }
+
+/* the seven move stages: no arrow, more room for the paragraph */
+.doors--stages { display: block; border-top: 1px solid var(--line); }
+.door--stage {
+  display: block;
+  border-bottom: 1px solid var(--line);
+  padding-block: clamp(1.6rem, 3.4vw, 2.6rem);
+}
+.door--stage .door__name { font-size: clamp(1.4rem, 3vw, 2.1rem); }
+
+/* ==========================================================================
+   STORY CARDS + PORTRAITS
+   ========================================================================== */
+.story-grid { gap: var(--s-8) var(--s-6); }
+
+.story {
+  display: grid;
+  gap: var(--s-3);
+  align-content: start;
+}
+.story__who {
+  display: block;
+  font-weight: 500;
+  font-size: 1.0625rem;
+  letter-spacing: -0.015em;
+  margin-top: var(--s-3);
+}
+.story__role {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.story__hook {
+  display: block;
+  font-size: var(--t-small);
+  color: var(--text-muted);
+  max-width: 38ch;
+}
+
+.portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: var(--paper-300);
+  border: 1px solid var(--line);
+}
+.portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  /* portraits are the one place a slight desaturation earns its keep: it keeps a
+     grid of thirty strangers reading as one system rather than a stock collage */
+  filter: saturate(0.88) contrast(1.02);
+  transition: transform 900ms var(--ease), filter 600ms var(--ease);
+}
+.story:hover .portrait img { transform: scale(1.035); filter: saturate(1) contrast(1.02); }
+
+.portrait--mono {
+  display: grid;
+  place-items: center;
+  background: var(--ink-800);
+}
+.portrait--mono span {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.portrait--lg { aspect-ratio: 16 / 10; max-width: 34rem; }
+
+.story-hero { display: grid; gap: var(--s-5); margin-bottom: var(--s-8); }
+.story-hero__meta { display: grid; gap: var(--s-2); }
+.story-hero__role {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* ==========================================================================
+   FOR COMPANIES
+   ========================================================================== */
+.co-hero { display: grid; gap: var(--s-5); max-width: 52rem; }
+.co-hero h1 {
+  font-size: clamp(2.15rem, 5.4vw, 4.1rem);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  max-width: 20ch;
+}
+.co-hero .lead { max-width: 44ch; color: var(--text-invert-muted); }
+
+.co-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s-6);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding-block: var(--s-8);
+}
+@media (max-width: 48rem) { .co-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-8); } }
+
+.co-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+}
+@media (max-width: 60rem) { .co-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.co-rail { display: grid; border-top: 1px solid var(--line); }
+.co-rail__item {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: var(--s-4);
+  padding-block: var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+.co-rail__k {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--accent-ink);
+  letter-spacing: 0.06em;
+}
+.co-rail__v { font-weight: 500; font-size: 0.9375rem; letter-spacing: -0.01em; }
+.co-rail__n { grid-column: 2; font-size: var(--t-small); color: var(--text-faint); margin-top: 2px; }
+
+.co-timeline { display: grid; border-top: 1px solid var(--line); }
+.co-timeline__row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: var(--s-5);
+  padding-block: var(--s-5);
+  border-bottom: 1px solid var(--line);
+  font-size: var(--t-small);
+  color: var(--text-muted);
+}
+.co-timeline__w {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+@media (max-width: 40rem) {
+  .co-timeline__row { grid-template-columns: 1fr; gap: var(--s-2); }
+}
+
+/* ==========================================================================
+   HERO BACKGROUND
+   The hero sets `color: var(--text-invert)` (paper) but had no background of
+   its own — it relied on the footage slot for its dark fill. Removing that slot
+   left paper text on a paper body, i.e. an invisible headline. The hero owns
+   its background now, so nothing else can take it away again.
+   ========================================================================== */
+.hero {
+  background:
+    radial-gradient(125% 90% at 16% 10%, rgba(0, 224, 122, 0.07) 0%, rgba(0, 0, 0, 0) 58%),
+    radial-gradient(90% 80% at 88% 104%, rgba(255, 255, 255, 0.045) 0%, rgba(0, 0, 0, 0) 62%),
+    var(--ink-900);
+  color: var(--text-invert);
+}
+.hero .eyebrow { color: var(--accent); }
+
+/* The company hero is the same object at a different register. */
+#co-hero {
+  background:
+    radial-gradient(120% 85% at 82% 8%, rgba(0, 224, 122, 0.06) 0%, rgba(0, 0, 0, 0) 58%),
+    var(--ink-900);
+}
+#co-hero .eyebrow { color: var(--accent); }
+
+/* ==========================================================================
+   TEXT ON DARK BANDS
+   `.eyebrow` uses `--text-muted`, which is a paper-context token. Inside a dark
+   band that gave 2.92:1 — dark grey on near-black. Eyebrows and leads on ink
+   surfaces now use the invert tokens, which measure 7.5:1 and up.
+   ========================================================================== */
+.band--ink .eyebrow,
+.band--ink-800 .eyebrow,
+.band--ink .lead,
+.band--ink-800 .lead,
+.band--ink .crumbs,
+#co-hero .lead {
+  color: var(--text-invert-muted);
+}
+.hero .eyebrow { color: var(--accent); }
+
+/* Links inside card asides measured 22px tall on /for-companies/<vertical>/ —
+   under the 24px WCAG 2.2 SC 2.5.8 minimum. They sit outside prose, so the
+   inline-link exemption does not apply. */
+.aside-sticky .card a,
+.card .stack a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+}
+
+/* ==========================================================================
+   HERO — geometry taken from moritzlegal.com (measured, not eyeballed)
+   Reference, at a 1262px viewport: content column left-offset 80px and 514px
+   wide (~41vw); eyebrow 14px, +0.08em, uppercase, weight 500; H1 54px with a
+   56.7px line-height (1.05) and -3% tracking at weight 400; sub 16/24; two
+   buttons at 50px tall, 8px radius, 16px padding, 16px apart on one row. The
+   block sits left-aligned and slightly below vertical centre, from roughly 25%
+   to 87% of the viewport.
+   Our copy and our typefaces; their proportions.
+   ========================================================================== */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  overflow: hidden;
+  /* bias the block just below centre, as Moritz does */
+  padding-top: clamp(6rem, 11vh, 8.5rem);
+  padding-bottom: clamp(3rem, 6vh, 4.5rem);
+  background: var(--ink-900);   /* base under the media layer */
+  color: var(--text-invert);
+}
+
+.hero__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.hero__media video,
+.hero__media img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+/* shown only while no video/img is present; the :has() guard removes it */
+.hero__media-fallback {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 78% 18%, rgba(0, 224, 122, 0.10) 0%, rgba(0, 0, 0, 0) 55%),
+    radial-gradient(90% 70% at 12% 92%, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0) 60%),
+    linear-gradient(160deg, #17171a 0%, #0e0e10 48%, #0b0b0c 100%);
+}
+.hero__media:has(video) .hero__media-fallback,
+.hero__media:has(img) .hero__media-fallback { display: none; }
+
+.hero__media-tag {
+  position: absolute; right: clamp(1rem, 4vw, 3rem); bottom: clamp(1rem, 4vh, 2.5rem);
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(251, 250, 248, 0.34);
+}
+.hero__media:has(video) .hero__media-tag,
+.hero__media:has(img) .hero__media-tag { display: none; }
+
+/* Left-weighted scrim: the subject sits right, the words sit left. */
+.hero__scrim {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(96deg, rgba(6, 6, 7, 0.92) 0%, rgba(6, 6, 7, 0.78) 30%,
+                    rgba(6, 6, 7, 0.42) 58%, rgba(6, 6, 7, 0.16) 100%),
+    linear-gradient(180deg, rgba(6, 6, 7, 0.55) 0%, rgba(0, 0, 0, 0) 26%);
+}
+
+.hero__row { position: relative; z-index: 2; width: 100%; }
+
+.hero__inner {
+  display: grid;
+  gap: var(--s-5);
+  max-width: min(34rem, 42vw);
+}
+@media (max-width: 60rem) { .hero__inner { max-width: 34rem; } }
+
+.hero .eyebrow {
+  color: rgba(251, 250, 248, 0.9);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  margin-bottom: var(--s-2);
+}
+
+.hero__h1 {
+  font-family: var(--font-sans);
+  font-size: clamp(2.25rem, 4.3vw, 4.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  margin-block: var(--s-3);
+}
+.hero__h1 em { color: var(--accent); }
+
+.hero__sub {
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 1.15vw, 1.0625rem);
+  line-height: 1.5;
+  color: rgba(251, 250, 248, 0.82);
+  max-width: 34rem;
+  margin: 0 0 var(--s-3);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+  margin-top: var(--s-4);
+}
+
+/* Moritz's button metric: 50px tall, 8px radius, 16px/24px padding. */
+.btn--hero {
+  height: 50px;
+  padding-inline: var(--s-6);
+  border-radius: var(--r-lg);
+  font-size: 0.9375rem;
+}
+.btn--hero.btn--glass {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--text-invert);
+}
+.btn--hero.btn--glass:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.34);
+}
+
+/* ==========================================================================
+   THE FOUR LAYERS — one horizontal band.
+
+   Dividers run BETWEEN the columns (vertical hairlines down the side), not
+   along the length. Four tall rows became one compact band, 4 -> 2 -> 1 columns.
+
+   Specificity note, because this bit twice: the base `.door` in components.css
+   is a THREE-column grid (`3.5rem 1fr auto`) built for a different markup shape
+   (num | body | meta). This variant renders the flat spans directly, so it has
+   to reset `grid-template-columns` and `align-items` explicitly. Overriding only
+   display/gap/padding left the three-column template in place, which flowed
+   `01 / Discover / Where can I go?` onto a single line with the arrow wrapped
+   underneath. When a variant reuses a class, reset the whole rule, not the
+   properties you happen to be changing.
+   ========================================================================== */
+.doors--row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.doors--row .door {
+  display: grid;
+  /* number beside the name; question and arrow stack beneath */
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  align-content: start;
+  column-gap: var(--s-4);
+  row-gap: var(--s-2);
+  padding: var(--s-6);
+  border-left: 1px solid var(--line);
+  border-bottom: 0;
+  transition: background-color var(--dur) var(--ease);
+}
+.doors--row .door:first-child { border-left: 0; padding-left: 0; }
+.doors--row .door:last-child { padding-right: 0; }
+
+.doors--row .door__num { grid-column: 1; grid-row: 1; margin: 0; }
+.doors--row .door__name {
+  grid-column: 2; grid-row: 1;
+  font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+  letter-spacing: -0.025em;
+}
+.doors--row .door__q {
+  grid-column: 2; grid-row: 2;
+  font-size: 0.9375rem;
+  margin: 0;
+  max-width: 28ch;
+  /* Reserve two lines' worth regardless of how long the question is, so the
+     arrows land on the same baseline across all four columns. Without this,
+     "How do I become globally recognised?" wraps to two lines and its arrow
+     sits 25px lower than the others, which reads as sloppy. */
+  min-height: 2.95em;
+}
+/* Dropped in row mode: the question is the signpost, and the full description
+   lives on each layer's own page. */
+.doors--row .door__desc { display: none; }
+.doors--row .door__arrow { grid-column: 2; grid-row: 3; margin-top: var(--s-3); }
+
+/* Neutralise the original door interaction. It animates padding, which would
+   shove content sideways on hover inside a four-across band, and it paints a
+   ::before fill that would double up with the background change below. */
+.doors--row .door::before { display: none; }
+.doors--row .door:hover { background: var(--paper-200); padding: var(--s-6); }
+.doors--row .door:first-child:hover { padding-left: 0; }
+.doors--row .door:last-child:hover { padding-right: 0; }
+.doors--row .door:hover .door__arrow { transform: translateX(6px); }
+
+@media (max-width: 60rem) {
+  .doors--row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .doors--row .door {
+    padding: var(--s-5);
+    border-left: 1px solid var(--line);
+    border-top: 1px solid var(--line);
+  }
+  .doors--row .door:nth-child(-n+2) { border-top: 0; }
+  .doors--row .door:nth-child(odd) { border-left: 0; padding-left: 0; }
+  .doors--row .door:hover { padding: var(--s-5); }
+  .doors--row .door:nth-child(odd):hover { padding-left: 0; }
+}
+@media (max-width: 40rem) {
+  .doors--row { grid-template-columns: minmax(0, 1fr); }
+  .doors--row .door,
+  .doors--row .door:hover { border-left: 0; padding-inline: 0; }
+  .doors--row .door:nth-child(2) { border-top: 1px solid var(--line); }
+}
+
+/* ==========================================================================
+   THE BELIEF — a deliberate composition instead of two lonely objects.
+   The old version was a grid-2 with a 3-line paragraph in one column and a
+   lone CTA in the other: the button floated at the top of an otherwise empty
+   column, and 60% of the full-bleed ink band was dead space.
+   Now: a full-width two-line statement, then two columns that both carry real
+   content, with the CTA sitting under the sentence it answers.
+   ========================================================================== */
+.belief__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  column-gap: clamp(2rem, 6vw, 5.5rem);
+  row-gap: clamp(2rem, 4.5vw, 3.25rem);
+  align-items: start;
+}
+.belief__head { grid-column: 1 / -1; display: grid; gap: var(--s-4); }
+.belief__head h2 {
+  font-size: clamp(1.9rem, 3.9vw, 3.25rem);
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  max-width: 20ch;
+}
+.belief__what { max-width: 46ch; }
+.belief__close { display: grid; gap: var(--s-6); justify-items: start; }
+.belief__close .lead { max-width: 42ch; }
+
+@media (max-width: 60rem) {
+  .belief__grid { grid-template-columns: minmax(0, 1fr); }
+  .belief__head h2 { max-width: 26ch; }
+}
+/* the band carries a lot of vertical padding; trim it here where the section
+   is short and the void was doing the damage */
+.belief.band { padding-block: clamp(3.5rem, 8vw, 6.5rem); }
+
+/* ==========================================================================
+   HERO FOOTAGE
+   A locked-off studio interview. The source is 16:9 and the subject sits right
+   of centre, so on a wide viewport nothing is cropped and the left third stays
+   black for the headline. On a narrow viewport `cover` crops horizontally, so
+   object-position is biased toward the subject to keep him in frame.
+   ========================================================================== */
+.hero__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 66% center;
+}
+
+/* Narrow: the video fills more of the frame, so the scrim has to work harder
+   for the headline to stay legible. */
+@media (max-width: 60rem) {
+  .hero__scrim {
+    background:
+      linear-gradient(180deg, rgba(6, 6, 7, 0.88) 0%, rgba(6, 6, 7, 0.66) 42%,
+                      rgba(6, 6, 7, 0.58) 100%),
+      linear-gradient(96deg, rgba(6, 6, 7, 0.72) 0%, rgba(6, 6, 7, 0.30) 70%,
+                      rgba(6, 6, 7, 0.18) 100%);
+  }
+  .hero__video { object-position: 72% center; }
+}
+
+/* ==========================================================================
+   MOBILE — corrective layer
+   Loaded after components.css, so equal-specificity rules here win.
+
+   The measured problems this addresses (see research/mobile-audit.md):
+   desktop-first CSS with no min-width query anywhere, six ad-hoc breakpoints,
+   and nothing below 640px, so every phone from 320-639px got one layout.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. THE NAVIGATION WAS UNREACHABLE ON A PHONE
+
+   At <=62rem components.css hides .nav__links and reveals .nav__toggle — but
+   the two desktop CTAs inside .nav__right were never hidden. So a phone got
+   wordmark + "For companies" + "Find your route" + hamburger, and .nav__right
+   measured 366px inside a 390px viewport. The hamburger was pushed 120px
+   off-screen, which meant the drawer below could never be opened. The drawer
+   and its JS were fine all along.
+   -------------------------------------------------------------------------- */
+@media (max-width: 48rem) {
+  /* Partially visible beats fully hidden. NN/g (Pernice & Budiu): "Hidden
+     navigation is less discoverable than visible or partially visible
+     navigation... discoverability is cut almost in half by hiding a website's
+     main navigation", and it costs task time and raises perceived difficulty.
+
+     So the primary CTA stays on screen and only the secondary link moves into
+     the drawer. The original design had this intent (the CTAs were the things
+     overflowing) and simply never hid the secondary one. */
+  .nav__right > .btn--ghost { display: none; }
+  .nav__right > .btn--primary {
+    padding-inline: var(--s-4);
+    font-size: var(--t-small);
+  }
+  .nav__right > .btn--primary .btn__arrow { display: none; }
+  .nav__mark { font-size: 1.25rem; }
+  .nav__inner { gap: var(--s-3); }
+}
+
+/* Measured: wordmark 84 + CTA 133 + toggle 44 + gaps 24 + gutters 36 = 321px.
+   So the CTA fits at every width from 336px up, which means only the very
+   smallest phones (320px) fall back to wordmark + toggle. */
+@media (max-width: 21rem) {
+  .nav__right > .btn--primary { display: none; }
+}
+
+@media (max-width: 48rem) {
+  .nav__drawer.is-open {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-1);
+    /* a tall drawer must not run off the bottom of the screen */
+    max-height: calc(100svh - 5.5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .nav__drawer a {
+    font-size: 1.375rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  /* the CTA is not a nav row — it needs to look like the button it is */
+  .nav__drawer .nav__cta {
+    justify-content: center;
+    font-family: var(--font-sans);
+    font-size: var(--t-small);
+    min-height: 48px;
+    padding-inline: var(--s-6);
+    margin-top: var(--s-4);
+    border-bottom: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. THE DOORS BAND STAYED TWO-COLUMN ON A PHONE
+
+   The reset below 40rem sets the template to one column, but the explicit
+   placements on .door__num / .door__name are more specific and were never
+   cleared — so the number and name stayed on one line inside a one-column
+   track, and the arrow stranded below a two-line reserve that only exists to
+   align arrows across columns on desktop.
+   -------------------------------------------------------------------------- */
+@media (max-width: 40rem) {
+  /* The door's OWN template must collapse too — resetting only the children's
+     placement leaves the stray `auto` first column alive, which put the
+     description in a 41px track and overflowed it by 40px. */
+  .doors--row .door {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .doors--row .door > * { grid-column: auto; grid-row: auto; }
+  .doors--row .door__q { min-height: 0; }
+  /* stacked, so there is room for the supporting sentence again */
+  .doors--row .door__desc { display: block; }
+  .doors--row .door__arrow { margin-top: var(--s-4); }
+}
+
+/* --------------------------------------------------------------------------
+   3. TAGS WERE 10px
+   -------------------------------------------------------------------------- */
+.tag {
+  font-size: 0.75rem;
+  padding: 5px 10px;
+}
+
+/* ==========================================================================
+   BREAKPOINT SYSTEM
+
+   Consolidated from six ad-hoc values (40/44/48/60/62/64rem) — five of which
+   clustered uselessly between 960px and 1024px — down to three tiers plus one
+   small-phone tier. The old smallest breakpoint was 640px, which meant every
+   phone from 320px to 639px got one identical layout.
+
+     30rem  480px   small phone        (adds the tier that never existed)
+     40rem  640px   phone -> large phone
+     48rem  768px   large phone -> tablet   (nav switches to the drawer here)
+     60rem  960px   tablet -> desktop       (multi-column layouts stack)
+
+   Everything above 960px is the desktop design and is unchanged.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   SMALL PHONE (<=480px) — the tier that was missing entirely.
+   At 320px the hero headline and the gutters both need to give a little.
+   -------------------------------------------------------------------------- */
+@media (max-width: 30rem) {
+  :root {
+    --shell-x: 1.125rem;                     /* 18px, from 20px */
+  }
+  .hero__h1 {
+    /* 32px at 320px, 36px by 480px — the previous floor of 36px left almost
+       no room for the headline to breathe at 320px */
+    font-size: clamp(2rem, 8.4vw, 2.25rem);
+  }
+  .hero__actions { gap: var(--s-3); }
+  .hero__actions .btn { width: 100%; justify-content: center; }
+  .footer__cols { gap: var(--s-6); }
+}
+
+/* --------------------------------------------------------------------------
+   SAFE AREAS (notch + home indicator)
+   The viewport meta now carries viewport-fit=cover, so a fixed nav will run
+   under the notch and bottom content under the iOS home indicator unless the
+   insets are honoured. env() resolves to 0 on devices without them.
+   -------------------------------------------------------------------------- */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .nav { padding-top: calc(var(--s-4) + env(safe-area-inset-top)); }
+  .nav.is-solid { padding-top: calc(var(--s-3) + env(safe-area-inset-top)); }
+  .nav__inner {
+    padding-left: max(var(--shell-x), env(safe-area-inset-left));
+    padding-right: max(var(--shell-x), env(safe-area-inset-right));
+  }
+  .footer { padding-bottom: calc(var(--s-8) + env(safe-area-inset-bottom)); }
+  .nav__drawer.is-open {
+    padding-bottom: calc(var(--s-4) + env(safe-area-inset-bottom));
+  }
+}
+
+/* ==========================================================================
+   STORIES INDEX — filter + progressive disclosure
+
+   31 cards stacked measured 24.5 phone screens and a single 19,261px section.
+   Nine by default, filter by where someone came from, expand on request.
+   The cards are all in the DOM (good for search and for no-JS), the JS only
+   toggles visibility.
+   ========================================================================== */
+.story-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-10);
+}
+.chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.chip {
+  font-family: var(--font-sans);
+  font-size: var(--t-small);
+  line-height: 1;
+  padding: 9px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.chip:hover { border-color: var(--text); color: var(--text); }
+.chip.is-on {
+  background: var(--ink-900);
+  border-color: var(--ink-900);
+  color: var(--text-invert);
+}
+.chip b { font-weight: 400; opacity: 0.5; margin-left: 0.4em; }
+.chip.is-on b { opacity: 0.72; }
+@media (pointer: coarse) {
+  .chip { min-height: 44px; padding-inline: 16px; }
+}
+
+.story-count {
+  font-family: var(--font-mono);
+  font-size: var(--t-mono);
+  letter-spacing: var(--tr-mono);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0;
+}
+
+.story.is-out { display: none; }
+
+.story-more { display: flex; justify-content: center; margin-top: var(--s-10); }
+.story-more[hidden] { display: none; }
+
+/* ==========================================================================
+   STORIES — compact rows on a phone
+
+   A full-width 4:5 portrait per card cost ~570px of scroll per story, so the
+   index still measured 8.7 screens after clamping to nine. On a phone the same
+   information reads better as a scannable row — a browse page should scan. The
+   large-portrait treatment is preserved from 768px up.
+   ========================================================================== */
+@media (max-width: 40rem) {
+  .story-grid { gap: 0; }
+  .story-grid .story {
+    grid-template-columns: 84px minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    column-gap: var(--s-4);
+    row-gap: var(--s-1);
+    align-items: start;
+    padding-block: var(--s-5);
+    border-top: 1px solid var(--line);
+  }
+  .story-grid .story:first-child { border-top: 0; }
+  .story-grid .story .portrait {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    aspect-ratio: auto;
+    align-self: stretch;
+    min-height: 88px;
+    border-radius: var(--r-md, 8px);
+  }
+  .story-grid .story__who { grid-column: 2; grid-row: 1; }
+  .story-grid .story__role { grid-column: 2; grid-row: 2; }
+  .story-grid .story__hook { grid-column: 2; grid-row: 3; }
+}

@@ -1,0 +1,188 @@
+<!doctype html>
+<!--
+  MERITALIEN — deck slide
+  ============================================================
+  1280 × 720 CSS px == 960 × 540 pt — true 16:9.
+  One .slide element per PDF page.
+
+  Render:
+    python generators/render-pdf.py templates/deck-slide.html out/deck.pdf --deck
+
+  Then LOOK at every page. Verify page count + size + embedded fonts, and
+  rasterise to PNG and inspect. An unlooked-at PDF is not a finished artifact.
+
+  Guidance: docs/06-cookbook.md §3 · copy: docs/03-voice.md
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Meritalien — deck slide</title>
+
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<!-- components.css IS required: .card, .fromto, .tag and .card__* live there.
+     Without it those elements render as unstyled text, which reads as a minimal
+     design choice rather than a broken stylesheet.
+
+     extra.css is DELIBERATELY NOT loaded. It carries the SITE's article print
+     stylesheet (its own @media print block), which for printing a web page:
+       - redefines the palette black-on-white to save ink (--ink-900 becomes #fff)
+       - collapses .grid-2/3/4 to one column
+       - hides .nav, .footer, .hero, .marquee, .btn
+       - drops body copy to 11pt
+     Correct for an article, fatal for a deck: the ink cover renders white and the
+     inverted text renders black. If you need extra.css's component tweaks in a
+     designed artifact, copy the specific rules you need instead of linking it. -->
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="print.css">
+
+<style>
+  /* 16:9 page box — overrides print.css's A4 default */
+  @page { size: 1280px 720px; margin: 0; }
+
+  .slide {
+    position: relative; width: 1280px; height: 720px; overflow: hidden;
+    background: var(--paper-100); color: var(--text);
+    padding: 44px 64px 36px;
+    display: flex; flex-direction: column;
+  }
+  .slide--ink { background: var(--ink-900); color: var(--text-invert); }
+  .slide--ink .eyebrow { color: var(--text-invert-muted); }
+
+  .slide__top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 16px; border-bottom: 1px solid var(--line);
+  }
+  .slide--ink .slide__top { border-bottom-color: var(--line-invert); }
+
+  /* serif = the statement. Geist = structure. mono = labels. */
+  .slide__title {
+    font-family: var(--font-serif); font-weight: 400;
+    font-size: 40px; line-height: 1.08; letter-spacing: var(--tr-heading);
+    margin: 18px 0 22px; max-width: 1010px;
+  }
+  .slide__title em { font-style: italic; color: var(--accent-ink); }
+  .slide--ink .slide__title em { color: var(--accent); }
+
+  /* `align-items: center` keeps a short slide balanced instead of top-heavy with
+     a dead void at the bottom. Do NOT use `align-content: stretch` to fill the
+     space — it pushes rows to the extremes and punches a hole through the middle.
+     Tried; it looks broken. */
+  .slide__body { display: grid; grid-template-columns: 400px 1fr; gap: 48px;
+                 flex: 1; min-height: 0; align-items: center; }
+  .slide__body > div { display: flex; flex-direction: column; gap: 14px; }
+  .slide__body .grid { gap: 14px; align-content: center; }
+
+  /* extra.css is not loaded here (see the head comment), so carry over the two
+     tweaks it used to supply that a slide actually wants. */
+  .slide .tag { font-size: 12px; padding: 5px 10px; }
+  /* cards stretch to their row so a 2x2 grid reads as a block, not four ragged boxes */
+  .slide__body .card { height: 100%; }
+
+  .slide__foot {
+    margin-top: 14px; padding-top: 11px; border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--text-faint);
+  }
+  .slide--ink .slide__foot { border-top-color: var(--line-invert); color: var(--text-invert-muted); }
+</style>
+</head>
+<body class="page-deck">
+
+<!-- ==================== SLIDE 1 — ink cover ==================== -->
+<!-- on-ink is NOT optional on a dark surface. Without it .fromto__to renders
+     --text (near-black) on near-black: the destination disappears and the track
+     line vanishes. It is the single easiest way to ship an invisible element. -->
+<div class="slide slide--ink on-ink">
+  <div class="slide__top">
+    <span class="eyebrow">Meritalien</span>
+    <span class="eyebrow">Global talent mobility</span>
+  </div>
+
+  <h1 class="slide__title" style="font-size:54px; margin-top:28px">
+    Exceptional talent shouldn't be limited by <em>borders</em>.
+  </h1>
+
+  <div style="flex:1"></div>
+
+  <!-- .fromto is an inline single-line route readout: from —•→ to.
+       The dot on the track is the accent, and on this slide it is the ONLY green. -->
+  <div class="fromto" style="align-self:flex-start; margin-bottom:24px">
+    <span class="fromto__from">Mumbai</span>
+    <span class="fromto__track" style="min-width:120px"></span>
+    <span class="fromto__to">San Francisco</span>
+  </div>
+
+  <div class="slide__foot">
+    <span>One position, stated</span>
+    <span>meritalien.com</span>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 2 — paper content ==================== -->
+<div class="slide">
+  <div class="slide__top">
+    <span class="eyebrow">01 — The system</span>
+    <span class="eyebrow">Four layers</span>
+  </div>
+
+  <!-- An artifact, not a paragraph. If the slide survives deleting the prose, delete it. -->
+  <h2 class="slide__title">Four layers. <em>One</em> journey.</h2>
+
+  <div class="slide__body">
+
+    <!-- LEFT — the artifact: a real route card -->
+    <div>
+      <article class="card">
+        <div class="card__kicker">
+          <span class="eyebrow">Active route</span>
+          <span class="tag tag--accent">O-1A</span>
+        </div>
+        <span class="fromto" style="font-size:15px">
+          <span class="fromto__from">Mumbai</span>
+          <span class="fromto__track"></span>
+          <span class="fromto__to">San Francisco</span>
+        </span>
+        <p class="card__body">
+          Three-year status. Self-petitioned — no employer sponsor required.
+        </p>
+      </article>
+    </div>
+
+    <!-- RIGHT — what it returns: the four layers -->
+    <div>
+      <div class="grid grid-2">
+        <article class="card">
+          <span class="eyebrow">01 · Discover</span>
+          <h3 class="card__title">Know where you can go.</h3>
+          <p class="card__body">Every route, mapped to what you already have.</p>
+        </article>
+        <article class="card">
+          <span class="eyebrow">02 · Build</span>
+          <h3 class="card__title">What you build unlocks the move.</h3>
+          <p class="card__body">Evidence, assembled before you file.</p>
+        </article>
+        <article class="card">
+          <span class="eyebrow">03 · Connect</span>
+          <h3 class="card__title">The people who open doors.</h3>
+          <p class="card__body">Founders, researchers, operators.</p>
+        </article>
+        <article class="card">
+          <span class="eyebrow">04 · Move</span>
+          <h3 class="card__title">Then it's legal.</h3>
+          <p class="card__body">Status in hand, not in theory.</p>
+        </article>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="slide__foot">
+    <span>Sources: USCIS, GOV.UK, IRCC</span>
+    <span>2 / 2</span>
+  </div>
+</div>
+
+</body>
+</html>

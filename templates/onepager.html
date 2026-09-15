@@ -1,0 +1,116 @@
+<!doctype html>
+<!--
+  MERITALIEN — one-pager (A4)
+  ============================================================
+  Render:
+    python generators/render-pdf.py templates/onepager.html out/onepager.pdf
+
+  A4 portrait. One .page element per PDF page.
+
+  Note the head: components.css IS loaded, extra.css is NOT. extra.css carries the
+  site's article print stylesheet, which redefines the palette black-on-white and
+  collapses every grid — correct for printing a web page, fatal for a designed
+  document. See templates/deck-slide.html for the full explanation.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Meritalien — one-pager</title>
+
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="print.css">
+
+<style>
+  /* A4 at the type sizes print.css pins for paper */
+  .doc-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 6mm; border-bottom: 1px solid var(--line-strong);
+  }
+  .doc-title {
+    font-family: var(--font-serif); font-weight: 400;
+    font-size: 26pt; line-height: 1.05; letter-spacing: var(--tr-heading);
+    margin: 8mm 0 3mm; max-width: 150mm;
+  }
+  .doc-title em { font-style: italic; color: var(--accent-ink); }
+  .doc-lead { font-size: 11.5pt; line-height: 1.45; max-width: 150mm; color: var(--text-muted); }
+  .doc-foot {
+    position: absolute; left: 16mm; right: 16mm; bottom: 12mm;
+    display: flex; justify-content: space-between;
+    padding-top: 4mm; border-top: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: 7.5pt;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint);
+  }
+  /* the signature component, at print scale */
+  .fromto { font-size: 10pt; }
+
+  /* Paper width is not a viewport. A4 is 794px CSS wide, which is under the
+     site's 60rem (960px) breakpoint, so .grid-3 silently drops to two columns
+     and strands the third card. A document declares its own column count. */
+  .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+</style>
+</head>
+<body>
+
+<!-- ======================= PAGE 1 ======================= -->
+<div class="page">
+
+  <header class="doc-head">
+    <span class="nav__mark" style="font-size:13pt">Merit<span>alien</span></span>
+    <span class="eyebrow">Global talent mobility</span>
+  </header>
+
+  <h1 class="doc-title">
+    Exceptional talent shouldn't be limited by <em>borders</em>.
+  </h1>
+
+  <p class="doc-lead">
+    One paragraph, in the serif-adjacent register, stating the position. Short
+    sentences. No hedging — all qualification lives on the legal pages.
+  </p>
+
+  <div style="margin: 7mm 0">
+    <span class="fromto">
+      <span class="fromto__from">Mumbai</span>
+      <span class="fromto__track" style="min-width:40mm"></span>
+      <span class="fromto__to">San Francisco</span>
+    </span>
+  </div>
+
+  <div class="grid grid-3" style="gap:5mm; margin-top:8mm">
+    <div class="card" style="padding:4mm">
+      <span class="eyebrow">01 · Discover</span>
+      <h3 class="card__title" style="font-size:10pt">Know where you can go.</h3>
+      <p class="card__body">Every route, mapped to what you already have.</p>
+    </div>
+    <div class="card" style="padding:4mm">
+      <span class="eyebrow">02 · Build</span>
+      <h3 class="card__title" style="font-size:10pt">What you build unlocks the move.</h3>
+      <p class="card__body">Evidence, assembled before you file.</p>
+    </div>
+    <div class="card" style="padding:4mm">
+      <span class="eyebrow">03 · Move</span>
+      <h3 class="card__title" style="font-size:10pt">Then it's legal.</h3>
+      <p class="card__body">Three-year status, self-petitioned.</p>
+    </div>
+  </div>
+
+  <!-- ink inset for the one number or claim that matters -->
+  <div class="band--ink on-ink" style="background:var(--ink-900); color:var(--text-invert);
+       border-radius:var(--r-lg); padding:6mm; margin-top:9mm">
+    <span class="eyebrow" style="color:var(--text-invert-muted)">The claim</span>
+    <p class="lead" style="margin-top:3mm; color:var(--text-invert); font-size:12pt">
+      A single statement that earns the dark band. One idea, set large.
+    </p>
+  </div>
+
+  <div class="doc-foot">
+    <span>Sources: USCIS, GOV.UK, IRCC</span>
+    <span>meritalien.com</span>
+  </div>
+</div>
+
+</body>
+</html>
